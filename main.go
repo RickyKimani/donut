@@ -2,17 +2,12 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"math"
 	"os"
 	"os/signal"
 	"strings"
 	"time"
-
-	"github.com/faiface/beep"
-	"github.com/faiface/beep/speaker"
-	"github.com/faiface/beep/wav"
 )
 
 var (
@@ -21,31 +16,7 @@ var (
 	homeCursor  = "\x1b[H"
 )
 
-func playLoopWav() {
-	f, err := os.Open("loop.wav")
-	if err != nil {
-		panic(err)
-	}
-
-	streamer, format, err := wav.Decode(f)
-	if err != nil {
-		panic(err)
-	}
-
-	speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/10))
-	looped := beep.Loop(-1, streamer)
-	speaker.Play(looped)
-
-}
-
 func main() {
-	noMusic := flag.Bool("no-music", false, "Disable music")
-	n := flag.Bool("n", false, "Disable music(shorhand)")
-	flag.Parse()
-	if !*noMusic && !*n {
-		playLoopWav()
-	}
-
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	go func() {
